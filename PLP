@@ -1,0 +1,94 @@
+package chapter1;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+
+import javax.swing.text.Document;
+
+import org.jsoup.Jsoup;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import java.util.*;  
+public class images_broken_2 {
+
+	public static void main(String[] args)throws Exception {
+		//VerifyBrokenImagesUsingSelenium();
+		VerifyBrokenImagesUsingSelenium();
+			}
+
+			public static void VerifyBrokenImagesUsingSelenium() throws Exception {
+				
+				WebDriver driver = new ChromeDriver();
+				driver.get("https://latinamerica.brother.com/laser/multifuncionales");
+				Scanner sc= new Scanner(System.in);
+				Thread.sleep(5000);
+				System.out.print("Enter first number- ");  
+				int a= sc.nextInt(); 
+				 HashMap<String,String> images=new HashMap<String,String>();
+				//List<WebElement> images = driver.findElements(By.className("coveo-list-layout CoveoResult "));
+				List<WebElement> coveoResult = driver.findElements(By.className("coveo-list-layout"));
+				for (WebElement item : coveoResult) 
+				{ 
+					WebElement coveowrap = item.findElement(By.className("nep-coveo-wrap"));
+					WebElement coveocard = coveowrap.findElement(By.className("nep-coveo-card"));
+					WebElement coveothumbnail = coveocard.findElement(By.className("nep-coveo-thumbnail"));
+					WebElement anchor = coveothumbnail.findElement(By.tagName("a"));
+					String sku = anchor.getAttribute("href");
+					WebElement img = anchor.findElement(By.tagName("img"));
+					String imageSrc = img.getAttribute("src");
+					int width = Integer.parseInt(img.getAttribute("naturalWidth"));
+					
+					//int a=Integer.parseInt(width)
+					
+					if(width == 0) {
+						images.put(sku, null);
+					}else {					
+					images.put(sku, imageSrc);
+					}
+					
+				}
+				
+				  for(Map.Entry m : images.entrySet()){    
+					    System.out.println(m.getKey()+" "+m.getValue());    
+					   } 
+				  
+				//List<WebElement> coveowrap = coveoResult.findElements(By.className("nep-coveo-wrap"));
+				
+				//System.out.println(images.size());
+           
+				/*for (WebElement image : images) {
+					String imageSrc = image.getAttribute("src");
+
+					try {
+						URL url = new URL(imageSrc);
+						URLConnection urlConnection = url.openConnection();
+						HttpURLConnection httpURLConnection = (HttpURLConnection) urlConnection;
+						httpURLConnection.setConnectTimeout(5000);
+						httpURLConnection.connect();
+
+						if(httpURLConnection.getResponseCode() == 200)
+							System.out.println(imageSrc + " >> " + httpURLConnection.getResponseCode() + " >> " +httpURLConnection.getResponseMessage());
+						else
+							
+							System.err.println(imageSrc + " >> " + httpURLConnection.getResponseCode() + " >> " +httpURLConnection.getResponseMessage());
+
+						httpURLConnection.disconnect();
+					} catch (Exception e) {
+						System.err.println(imageSrc);
+					}
+				}*/
+			
+			}
+
+			
+				
+			
+		}
